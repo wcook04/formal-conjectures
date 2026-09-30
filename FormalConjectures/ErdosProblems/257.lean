@@ -101,4 +101,60 @@ theorem erdos_257.variants.tsum_top :
     Irrational <| ∑' n, n.divisors.card / (2 ^ n : ℝ) := by
   sorry
 
+namespace MixedSupport
+
+open Finset
+open scoped BigOperators
+
+noncomputable def erdosSupportSeries (b : ℕ) (A : Set ℕ) : ℝ :=
+  ∑' a : ℕ, Set.indicator A (fun a => (1 : ℝ) / ((b : ℝ) ^ a - 1)) a
+
+noncomputable def primeSetPart (P : Finset ℕ) (a : ℕ) : ℕ :=
+  ∏ p ∈ P, p ^ a.factorization p
+
+noncomputable def primeWeightedTerm (b : ℕ) (P : Finset ℕ) (a : ℕ) : ℝ :=
+  (primeSetPart P a : ℝ) /
+    ((a : ℝ) * ((b : ℝ) ^ primeSetPart P a - 1))
+
+noncomputable def FinitePrimeWeighted (b : ℕ) (A : Set ℕ) : Prop :=
+  ∃ P : Finset ℕ, P.Nonempty ∧ (∀ p ∈ P, Nat.Prime p) ∧
+    Summable (Set.indicator A (primeWeightedTerm b P))
+
+structure LogBudgetCover (A : Set ℕ) where
+  frame : ℕ → Finset ℕ
+  weight : ℕ → ℝ
+  exponent : ℕ → ℝ
+  coefficient : ℕ → ℕ → ℝ
+  frame_positive : ∀ j, 0 ∉ frame j
+  weight_positive : ∀ j, 0 < weight j
+  weight_sum : HasSum weight 1
+  exponent_bounds : ∀ j, 0 < exponent j ∧ exponent j ≤ 1
+  coefficient_nonneg : ∀ j d, 0 < d → 0 ≤ coefficient j d
+  column_summable : ∀ j, Summable (fun d : ℕ => coefficient j d / (d : ℝ))
+  covers : ∀ a ∈ A, ∃ j, a ∈ frame j
+  majorises : ∀ j n, 0 < n →
+    (((frame j).filter (fun a => a ∣ n)).card : ℝ) ^ exponent j ≤
+      ∑ d ∈ n.divisors, coefficient j d
+  budget_summable : Summable (fun j =>
+    (∑' d : ℕ, coefficient j d / (d : ℝ)) /
+      (weight j ^ exponent j) / ((2 : ℝ) ^ exponent j - 1))
+
+end MixedSupport
+
+open MixedSupport
+
+/-- Every infinite subset of a mixed finite-prime weighted and arbitrary-weight
+logarithmic-budget host has irrational reciprocal-power series at every integer base
+at least two. These sufficient support classes do not settle arbitrary infinite support.
+The classical digit-block method is due to Erdős; the mixed cover formulation is
+formalized in Cook's source, with priority unadjudicated. -/
+@[category research solved, AMS 11, formal_proof using lean4 at
+  "https://github.com/wcook04/plectis-erdos-lean/blob/fd5388a4ea3a19f0b950395b137fda261c05f9a0/Solutions/PalomarCorpus/E257_01/PaperStructuresBO.lean#L65-L69"]
+theorem erdos_257.variants.arbitrary_weight_mixed_support
+    (E V : Set ℕ) (hE0 : 0 ∉ E) (hE : FinitePrimeWeighted 2 E)
+    (D : LogBudgetCover V) :
+    ∀ A : Set ℕ, A ⊆ E ∪ V → A.Infinite → ∀ b : ℕ, 2 ≤ b →
+      Irrational (erdosSupportSeries b A) := by
+  sorry
+
 end Erdos257
