@@ -114,7 +114,7 @@ W. Cook,
 https://github.com/wcook04/plectis-erdos/blob/598cd7bac8b73dcfef3687f46922c1ef6da766ae/docs/papers/full-text/erdos257-mersenne-reasoning-surface.md
 -/
 @[category research solved, AMS 11, formal_proof using lean4 at
-  "https://github.com/wcook04/plectis-erdos/blob/598cd7bac8b73dcfef3687f46922c1ef6da766ae/research/adapters/FormalConjecturesVariants.lean#L681-L689"]
+  "https://github.com/wcook04/plectis-erdos-lean/blob/587c48f213106c20ba2cdf3d585700c1394fc44f/verification/FC257ReciprocalSupport/research/adapters/FormalConjecturesVariants.lean#L681-L689"]
 theorem erdos_257.variants.summable_reciprocal_support
     (b : ℕ) (A : Set ℕ) (hb : 2 ≤ b) (hA : A.Infinite)
     (hsum : Summable (Set.indicator A (fun a : ℕ => (1 : ℝ) / (a : ℝ)))) :
